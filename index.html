@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shift Meal Planner — Meal Timing for Shift Workers</title>
+<meta name="description" content="Personalized meal schedule for night shift, rotating shift, and 12-hour shift workers. Based on CDC/NIOSH nutrition guidelines. Know exactly when to eat for energy and better sleep.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shift Meal Planner — Meal Timing for Shift Workers">
+<meta property="og:description" content="Personalized meal schedule for shift workers based on CDC guidelines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0f14;
+  --surface: #161a22;
+  --border: #232830;
+  --text: #e8eaed;
+  --text-dim: #8b919a;
+  --accent: #f5c542;
+  --accent-glow: rgba(245, 197, 66, 0.15);
+  --blue: #4a9eff;
+  --green: #34d399;
+  --red: #f87171;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 0;
+  background: rgba(12, 15, 20, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text);
+}
+
+nav a.nav-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+nav a.nav-link:hover { color: var(--text); }
+
+/* ── HERO ── */
+.hero {
+  padding: 160px 0 100px;
+  text-align: center;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.badge-pill {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 60px);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+h1 span { color: var(--accent); }
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.cta-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0c0f14;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  border-color: var(--text-dim);
+  background: var(--surface);
+}
+
+/* ── TIMELINE DEMO ── */
+.demo-section {
+  padding: 80px 0;
+}
+
+.section-label {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 32px;
+  margin-bottom: 48px;
+}
+
+.timeline-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.timeline-date {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.toggle-pill {
+  background: var(--accent);
+  color: #0c0f14;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+
+.meal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.meal-item:last-child { border-bottom: none; }
+
+.meal-time {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 65px;
+  padding-top: 2px;
+}
+
+.meal-time.night {
+  color: var(--blue);
+}
+
+.meal-time.caffeine {
+  color: var(--red);
+}
+
+.meal-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.meal-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.meal-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.meal-tag.regular { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+.meal-tag.light { background: rgba(74, 158, 255, 0.15); color: var(--blue); }
+.meal-tag.stop { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+
+/* ── FEATURES ── */
+.features-section {
+  padding: 80px 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: border-color 0.3s;
+}
+
+.feature-card:hover { border-color: var(--accent); }
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  padding: 80px 0;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.step {
+  text-align: center;
+}
+
+.step-number {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0c0f14;
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.step h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ── WHO ── */
+.who-section {
+  padding: 80px 0;
+}
+
+.who-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.who-tag {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── CTA ── */
+.cta-section {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.cta-section h2 {
+  margin-bottom: 16px;
+}
+
+.cta-section p {
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  font-size: 16px;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  text-align: center;
+}
+
+footer p {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+footer a:hover { color: var(--text); }
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .hero { padding: 130px 0 60px; }
+  
+  h2 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a class="logo" href="#">
+      <div class="logo-icon">🍽</div>
+      <span class="logo-text">Shift Meal Planner</span>
+    </a>
+    <a class="nav-link" href="mailto:naruto0414@gmail.com">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="badge-pill">Based on CDC/NIOSH Guidelines</div>
+    <h1>Know <span>when</span> to eat<br>on every shift</h1>
+    <p class="hero-sub">Personalized meal timing for nurses, EMTs, factory workers, and anyone working nights, rotating, or 12-hour shifts. Set up in 15 seconds.</p>
+    <div class="cta-row">
+      <a href="#" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        App Store
+      </a>
+      <a href="#features" class="btn btn-outline">Learn More ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE DEMO -->
+<section class="demo-section">
+  <div class="container" style="text-align:center;">
+    <p class="section-label">Your Schedule</p>
+    <h2>A 12h night shift looks like this</h2>
+    <div class="timeline-card">
+      <div class="timeline-header">
+        <span class="timeline-date">8:00 PM → 8:00 AM</span>
+        <span class="toggle-pill">WORK DAY</span>
+      </div>
+      <div class="meal-item">
+        <span class="meal-time">6:30 PM</span>
+        <div>
+          <div class="meal-name">Pre-shift Meal</div>
+          <div class="meal-desc">Balanced meal before your shift</div>
+          <span class="meal-tag regular">Regular</span>
+        </div>
+      </div>
+      <div class="meal-item">
+        <span class="meal-time night">2:00 AM</span>
+        <div>
+          <div class="meal-name">Mid-shift Meal</div>
+          <div class="meal-desc">Light protein — eggs, nuts, yogurt</div>
+          <span class="meal-tag light">Light Protein</span>
+        </div>
+      </div>
+      <div class="meal-item">
+        <span class="meal-time night">6:00 AM</span>
+        <div>
+          <div class="meal-name">Late-shift Snack</div>
+          <div class="meal-desc">Keep it light before shift ends</div>
+          <span class="meal-tag light">Light Protein</span>
+        </div>
+      </div>
+      <div class="meal-item">
+        <span class="meal-time">8:30 AM</span>
+        <div>
+          <div class="meal-name">Wind-down Meal</div>
+          <div class="meal-desc">Post-shift before sleep</div>
+          <span class="meal-tag regular">Regular</span>
+        </div>
+      </div>
+      <div class="meal-item">
+        <span class="meal-time caffeine">3:30 AM</span>
+        <div>
+          <div class="meal-name">Caffeine Cutoff</div>
+          <div class="meal-desc">No caffeine after this time</div>
+          <span class="meal-tag stop">Stop</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <p class="section-label">Features</p>
+    <h2>Built for shift workers</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-glow);">⏱</div>
+        <h3>Smart Meal Timing</h3>
+        <p>Optimized meal times calculated from your exact shift hours and sleep schedule.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(74,158,255,0.12);">🌙</div>
+        <h3>Night-shift Optimized</h3>
+        <p>Midnight-6AM meals automatically switch to light, protein-focused suggestions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(248,113,113,0.12);">☕</div>
+        <h3>Caffeine Cutoff</h3>
+        <p>Auto-calculated cutoff time to protect your sleep. Never guess again.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(52,211,153,0.12);">🔔</div>
+        <h3>Meal Reminders</h3>
+        <p>Push notifications 15 minutes before each meal so you never skip.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(168,130,255,0.12);">✅</div>
+        <h3>Check-in Tracking</h3>
+        <p>Track whether you ate or skipped. See your adherence on a calendar. (Pro)</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,197,66,0.12);">🔄</div>
+        <h3>Any Shift Pattern</h3>
+        <p>12h night, 8h day, evening, rotating, or fully custom. All supported.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="container" style="text-align:center;">
+    <p class="section-label">How It Works</p>
+    <h2>Set up in 15 seconds</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Pick your shift</h3>
+        <p>Choose from 6 presets or enter custom times</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Set sleep time</h3>
+        <p>Slide to your expected sleep start time</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Get your plan</h3>
+        <p>Personalized meal schedule generated instantly</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="who-section">
+  <div class="container">
+    <p class="section-label">Built For</p>
+    <h2>Anyone who works non-traditional hours</h2>
+    <div class="who-grid">
+      <span class="who-tag">👩‍⚕️ Nurses</span>
+      <span class="who-tag">🚑 EMTs</span>
+      <span class="who-tag">👮 Police Officers</span>
+      <span class="who-tag">🚒 Firefighters</span>
+      <span class="who-tag">🏭 Factory Workers</span>
+      <span class="who-tag">🛡 Security Guards</span>
+      <span class="who-tag">🚛 Truck Drivers</span>
+      <span class="who-tag">🔄 Rotating Shift Workers</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Stop guessing.<br><span style="color:var(--accent);">Start fueling right.</span></h2>
+    <p>Free to use. Pro features $4.99/month.</p>
+    <a href="#" class="btn btn-primary" style="font-size:17px;padding:16px 36px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Download on the App Store
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="mailto:naruto0414@gmail.com">Support</a>
+    </div>
+    <p>© 2026 osk. All rights reserved.</p>
+    <p style="margin-top:8px;font-size:12px;">This app does not provide medical or nutritional advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
